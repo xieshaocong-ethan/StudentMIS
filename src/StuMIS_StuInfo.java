@@ -8,10 +8,10 @@ public class StuMIS_StuInfo {
      Vector rsrow;
      Vector rshead;
 
-    public void getdata() throws PropertyVetoException, IOException, SQLException {
+    public void getdata(String sql) throws PropertyVetoException, IOException, SQLException {
         StuMIS_Database db = new StuMIS_Database();
         Connection conn = db.con1();
-        PreparedStatement ps = conn.prepareStatement("select * from stu");
+        PreparedStatement ps = conn.prepareStatement(sql);
         ResultSet rs = ps.executeQuery();
         rshead = new Vector();
         rsrow = new Vector();

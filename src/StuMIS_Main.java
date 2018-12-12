@@ -5,13 +5,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class StuMIS_Main extends JFrame implements ActionListener {
-
+    StuMIS_StuInfo stuinfo;
     JPanel pan1,pan2;
     JLabel lb1,lb2,lb3;
     JTextField tf1;
     JButton button1,button2,button3,button4;
     JTable table1;
     JScrollPane scrp1;
+    DefaultTableModel tm;
+
 //声明查询模块
     public StuMIS_Main() throws HeadlessException {
         //1
@@ -31,17 +33,18 @@ public class StuMIS_Main extends JFrame implements ActionListener {
         button4.addActionListener(this);button2.setActionCommand("delete");
         pan2.add(button2);pan2.add(button3);pan2.add(button4);
         //学生信息
-        StuMIS_StuInfo stuinfo = new StuMIS_StuInfo();
+        stuinfo = new StuMIS_StuInfo();
         try {
-            stuinfo.getdata();
+            stuinfo.getdata("select * from stu");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        DefaultTableModel tm = new DefaultTableModel(stuinfo.rsrow,stuinfo.rshead);
+        tm = new DefaultTableModel(stuinfo.rsrow,stuinfo.rshead);
         table1 = new JTable(tm);
-        //scrp1 = new JScrollPane(table1);
+        scrp1 = new JScrollPane(table1);
 
-        this.add(table1);
+        //this.add(table1);
+        this.add(scrp1);
         this.add(pan1,"North");
         this.add(pan2,"South");
         this.setTitle("学生信息管理系统");
@@ -56,6 +59,13 @@ public class StuMIS_Main extends JFrame implements ActionListener {
         if (e.getActionCommand().equals("select")) {
             String taText = tf1.getText().trim();
             String sql = "select * from Stu where Sname = '"+taText+"'";
+            try {
+                stuinfo.getdata(sql);
+                tm.setDataVector(stuinfo.rsrow,stuinfo.rshead);
+                tm.fireTableDataChanged();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
             // stuinfo =new StuInfo("sql")
             // table1.setModel(stuinfo);
         } else if(e.getActionCommand().equals("add")) {
