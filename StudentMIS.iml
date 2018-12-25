@@ -10,5 +10,8 @@
     <orderEntry type="library" name="mysql-connector-java-8.0.13" level="project" />
     <orderEntry type="library" name="c3p0-0.9.5.2" level="project" />
     <orderEntry type="library" name="mchange-commons-java-0.2.15" level="project" />
+    <orderEntry type="library" name="MigLayout" level="project" />
+    <orderEntry type="library" name="JGoodies Forms" level="project" />
+    <orderEntry type="library" name="IntelliJ IDEA GridLayout" level="project" />
   </component>
 </module>
