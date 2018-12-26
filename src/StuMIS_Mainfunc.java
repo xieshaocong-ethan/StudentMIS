@@ -6,6 +6,7 @@ import javax.swing.GroupLayout;
 import javax.swing.border.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
+import com.intellij.uiDesigner.core.*;
 
 import com.jgoodies.forms.factories.*;
 import com.jgoodies.forms.layout.*;
@@ -29,6 +30,23 @@ public class StuMIS_Mainfunc extends JFrame {
 
     public void setIscancel() {
         iscancel = false;
+    }
+
+    public void panelshake(JFrame frame){
+        int num = 10;
+        Point point =frame.getLocationOnScreen();
+        for (int i = 10; i > 0; i--) {
+            for (int j = num; j > 0; j--) {
+                point.y += i;
+                frame.setLocation(point);
+                point.x += i;
+                frame.setLocation(point);
+                point.y -= i;
+                frame.setLocation(point);
+                point.x -= i;
+                frame.setLocation(point);
+            }
+        }
     }
 
     private void addActionPerformed(ActionEvent e) {
@@ -89,10 +107,45 @@ public class StuMIS_Mainfunc extends JFrame {
         editlabel.setVisible(false);
     }
 
+    private void loginKeyTyped(KeyEvent e) {
+        // TODO add your code here
+        if (e.getKeyChar()==10) {
+            String username = username1.getText();
+            if (stuinfo.Userlogin(username) && !(username == null)) {
+                String password = new String(password1.getPassword());
+                if(stuinfo.isUserin(username,password) && !(password == null)) {
+                    tabp1.setEnabledAt(1,true);
+                    tabp1.setEnabledAt(2,true);
+                    tabp1.setSelectedIndex(1);
+                    username1.setVisible(false);
+                    ulb.setVisible(false);
+                    password1.setVisible(false);
+                    plb.setVisible(false);
+
+                } else {
+                    panelshake(this);
+                }
+            } else {
+               panelshake(this);
+            }
+        }
+    }
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        tabbedPane1 = new JTabbedPane();
-        dialogPane = new JPanel();
+        tabp1 = new JTabbedPane();
+        homep = new JPanel() {
+                    @Override
+                    public void paintComponent(Graphics g) {
+                        super.paintComponent(g);
+                        ImageIcon icon = new ImageIcon("C:\\javaP\\StudentMIS\\src\\3.jpg");
+                        g.drawImage(icon.getImage(),0,0,getWidth(),getHeight(),this);
+                    }
+                };
+        password1 = new JPasswordField();
+        username1 = new JFormattedTextField();
+        ulb = new JLabel();
+        plb = new JLabel();
+        datap = new JPanel();
         scrollPane1 = new JScrollPane();
         table1 = new JTable();
         panel2 = new JPanel();
@@ -108,13 +161,14 @@ public class StuMIS_Mainfunc extends JFrame {
         label3 = new JLabel();
         label4 = new JLabel();
         label5 = new JLabel();
-        panel1 = new JPanel();
+        optionp = new JPanel();
         panel4 = new JPanel();
         textField2 = new JTextField();
         textField3 = new JTextField();
         comboBox1 = new JComboBox<>();
         button2 = new JButton();
         comboBox2 = new JComboBox<>();
+        scrollPane2 = new JScrollPane();
         panel5 = new JPanel();
         button3 = new JButton();
 
@@ -126,13 +180,83 @@ public class StuMIS_Mainfunc extends JFrame {
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
 
-        //======== tabbedPane1 ========
+        //======== tabp1 ========
         {
-            tabbedPane1.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.PLAIN, 12));
+            tabp1.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.PLAIN, 12));
 
-            //======== dialogPane ========
+            //======== homep ========
             {
-                dialogPane.setBorder(null);
+                homep.setBorder(null);
+                homep.addKeyListener(new KeyAdapter() {
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+                        loginKeyTyped(e);
+                    }
+                });
+
+                //---- password1 ----
+                password1.addKeyListener(new KeyAdapter() {
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+                        loginKeyTyped(e);
+                    }
+                });
+
+                //---- username1 ----
+                username1.setToolTipText("\u8f93\u5165\u60a8\u7684\u8d26\u53f7");
+                username1.addKeyListener(new KeyAdapter() {
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+                        loginKeyTyped(e);
+                    }
+                });
+
+                //---- ulb ----
+                ulb.setText("\u7528\u6237\u540d");
+                ulb.setHorizontalAlignment(SwingConstants.CENTER);
+                ulb.setLabelFor(username1);
+                ulb.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.BOLD, 12));
+
+                //---- plb ----
+                plb.setText("\u5bc6   \u7801");
+                plb.setLabelFor(password1);
+                plb.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.BOLD, 12));
+                plb.setHorizontalAlignment(SwingConstants.CENTER);
+
+                GroupLayout homepLayout = new GroupLayout(homep);
+                homep.setLayout(homepLayout);
+                homepLayout.setHorizontalGroup(
+                    homepLayout.createParallelGroup()
+                        .addGroup(homepLayout.createSequentialGroup()
+                            .addGap(181, 181, 181)
+                            .addGroup(homepLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                .addComponent(ulb, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(plb, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE))
+                            .addGap(18, 18, 18)
+                            .addGroup(homepLayout.createParallelGroup()
+                                .addComponent(password1, GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
+                                .addComponent(username1, GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE))
+                            .addGap(217, 217, 217))
+                );
+                homepLayout.setVerticalGroup(
+                    homepLayout.createParallelGroup()
+                        .addGroup(GroupLayout.Alignment.TRAILING, homepLayout.createSequentialGroup()
+                            .addGap(361, 361, 361)
+                            .addGroup(homepLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(ulb)
+                                .addComponent(username1))
+                            .addGap(26, 26, 26)
+                            .addGroup(homepLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(plb)
+                                .addComponent(password1))
+                            .addGap(105, 105, 105))
+                );
+            }
+            tabp1.addTab("\u9996\u9875", homep);
+
+            //======== datap ========
+            {
+                datap.setBorder(null);
 
                 //======== scrollPane1 ========
                 {
@@ -231,6 +355,7 @@ public class StuMIS_Mainfunc extends JFrame {
 
                     //---- add ----
                     add.setText("\u6dfb\u52a0");
+                    add.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.PLAIN, 12));
                     add.addActionListener(e -> addActionPerformed(e));
 
                     //---- label3 ----
@@ -290,20 +415,20 @@ public class StuMIS_Mainfunc extends JFrame {
                     );
                 }
 
-                GroupLayout dialogPaneLayout = new GroupLayout(dialogPane);
-                dialogPane.setLayout(dialogPaneLayout);
-                dialogPaneLayout.setHorizontalGroup(
-                    dialogPaneLayout.createParallelGroup()
+                GroupLayout datapLayout = new GroupLayout(datap);
+                datap.setLayout(datapLayout);
+                datapLayout.setHorizontalGroup(
+                    datapLayout.createParallelGroup()
                         .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(dialogPaneLayout.createSequentialGroup()
-                            .addGroup(dialogPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(datapLayout.createSequentialGroup()
+                            .addGroup(datapLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(panel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(panel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
-                dialogPaneLayout.setVerticalGroup(
-                    dialogPaneLayout.createParallelGroup()
-                        .addGroup(dialogPaneLayout.createSequentialGroup()
+                datapLayout.setVerticalGroup(
+                    datapLayout.createParallelGroup()
+                        .addGroup(datapLayout.createSequentialGroup()
                             .addComponent(panel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
@@ -311,9 +436,10 @@ public class StuMIS_Mainfunc extends JFrame {
                             .addComponent(panel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                 );
             }
-            tabbedPane1.addTab("\u5b66\u751f\u6570\u636e", dialogPane);
+            tabp1.addTab("\u5b66\u751f\u6570\u636e", datap);
+            tabp1.setEnabledAt(1, false);
 
-            //======== panel1 ========
+            //======== optionp ========
             {
 
                 //======== panel4 ========
@@ -443,20 +569,26 @@ public class StuMIS_Mainfunc extends JFrame {
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                                 .addComponent(comboBox1, GroupLayout.PREFERRED_SIZE, 109, GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap())
+                            .addGroup(panel4Layout.createSequentialGroup()
+                                .addGap(172, 172, 172)
+                                .addComponent(scrollPane2, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(471, Short.MAX_VALUE))
                     );
                     panel4Layout.setVerticalGroup(
                         panel4Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                             .addGroup(panel4Layout.createSequentialGroup()
                                 .addGap(0, 0, 0)
                                 .addGroup(panel4Layout.createParallelGroup()
+                                    .addComponent(comboBox1)
                                     .addGroup(panel4Layout.createSequentialGroup()
-                                        .addComponent(comboBox1)
-                                        .addContainerGap())
-                                    .addGroup(panel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(button2)
-                                        .addComponent(textField3, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(comboBox2)
-                                        .addComponent(textField2, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))))
+                                        .addGroup(panel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                            .addComponent(button2)
+                                            .addComponent(textField3, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(comboBox2)
+                                            .addComponent(textField2, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(scrollPane2, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap())
                     );
                 }
 
@@ -482,33 +614,39 @@ public class StuMIS_Mainfunc extends JFrame {
                     );
                 }
 
-                GroupLayout panel1Layout = new GroupLayout(panel1);
-                panel1.setLayout(panel1Layout);
-                panel1Layout.setHorizontalGroup(
-                    panel1Layout.createParallelGroup()
+                GroupLayout optionpLayout = new GroupLayout(optionp);
+                optionp.setLayout(optionpLayout);
+                optionpLayout.setHorizontalGroup(
+                    optionpLayout.createParallelGroup()
                         .addComponent(panel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(panel5, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 );
-                panel1Layout.setVerticalGroup(
-                    panel1Layout.createParallelGroup()
-                        .addGroup(panel1Layout.createSequentialGroup()
-                            .addComponent(panel4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                optionpLayout.setVerticalGroup(
+                    optionpLayout.createParallelGroup()
+                        .addGroup(optionpLayout.createSequentialGroup()
+                            .addComponent(panel4, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(panel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                             .addGap(0, 309, Short.MAX_VALUE))
                 );
             }
-            tabbedPane1.addTab("\u6570\u636e\u64cd\u4f5c", panel1);
+            tabp1.addTab("\u6570\u636e\u64cd\u4f5c", optionp);
+            tabp1.setEnabledAt(2, false);
         }
-        contentPane.add(tabbedPane1, BorderLayout.NORTH);
+        contentPane.add(tabp1, BorderLayout.NORTH);
         pack();
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    private JTabbedPane tabbedPane1;
-    private JPanel dialogPane;
+    private JTabbedPane tabp1;
+    private JPanel homep;
+    private JPasswordField password1;
+    private JFormattedTextField username1;
+    private JLabel ulb;
+    private JLabel plb;
+    private JPanel datap;
     private JScrollPane scrollPane1;
     private JTable table1;
     private JPanel panel2;
@@ -524,13 +662,14 @@ public class StuMIS_Mainfunc extends JFrame {
     private JLabel label3;
     private JLabel label4;
     private JLabel label5;
-    private JPanel panel1;
+    private JPanel optionp;
     private JPanel panel4;
     private JTextField textField2;
     private JTextField textField3;
     private JComboBox<String> comboBox1;
     private JButton button2;
     private JComboBox<String> comboBox2;
+    private JScrollPane scrollPane2;
     private JPanel panel5;
     private JButton button3;
     // JFormDesigner - End of variables declaration  //GEN-END:variables

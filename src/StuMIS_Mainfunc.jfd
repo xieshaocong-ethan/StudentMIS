@@ -12,12 +12,69 @@ new FormModel {
 			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
 				name: "tabbedPane1"
 				"font": new java.awt.Font( "微软雅黑", 0, 12 )
+				auxiliary() {
+					"JavaCodeGenerator.variableName": "tabp1"
+				}
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {space :p:181:p, par l:::p {comp label6:::::x, comp label7:::p:36:p}, space s:p::p, par l {comp passwordField1::::291:x, comp formattedTextField1::::291:x}, space :p:217:p}}"
+					"$verticalGroup": "par l {seq t {space :p:361:p, par b {comp label6::b:p::p, comp formattedTextField1::b:::x}, space :p:26:p, par b {comp label7::b:p::p, comp passwordField1::b:::x}, space :p:105:p}}"
+				} ) {
+					name: "panel6"
+					"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+					auxiliary() {
+						"JavaCodeGenerator.customCreateCode": "new JPanel() {\n            @Override\n            public void paintComponent(Graphics g) {\n                super.paintComponent(g);\n                ImageIcon icon = new ImageIcon(\"C:\\\\javaP\\\\StudentMIS\\\\src\\\\3.jpg\");\n                g.drawImage(icon.getImage(),0,0,getWidth(),getHeight(),this);\n            }\n        };"
+						"JavaCodeGenerator.variableName": "homep"
+					}
+					addEvent( new FormEvent( "java.awt.event.KeyListener", "keyTyped", "loginKeyTyped", true ) )
+					add( new FormComponent( "javax.swing.JPasswordField" ) {
+						name: "passwordField1"
+						auxiliary() {
+							"JavaCodeGenerator.variableName": "password1"
+						}
+						addEvent( new FormEvent( "java.awt.event.KeyListener", "keyTyped", "loginKeyTyped", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
+						name: "formattedTextField1"
+						"toolTipText": "输入您的账号"
+						auxiliary() {
+							"JavaCodeGenerator.variableName": "username1"
+						}
+						addEvent( new FormEvent( "java.awt.event.KeyListener", "keyTyped", "loginKeyTyped", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label6"
+						"text": "用户名"
+						"horizontalAlignment": 0
+						"labelFor": new FormReference( "formattedTextField1" )
+						"font": &Font0 new java.awt.Font( "微软雅黑", 1, 12 )
+						auxiliary() {
+							"JavaCodeGenerator.variableName": "ulb"
+						}
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label7"
+						"text": "密   码"
+						"labelFor": new FormReference( "passwordField1" )
+						"font": #Font0
+						"horizontalAlignment": 0
+						auxiliary() {
+							"JavaCodeGenerator.variableName": "plb"
+						}
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "首页"
+					"disabledIcon": sfield com.jformdesigner.model.FormObject NULL_VALUE
+					"enabled": false
+				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 					"$horizontalGroup": "par l {comp scrollPane1::l:::x, seq l {par t:::p {comp panel3:::::x, comp panel2:::::x}, space :::x}}"
 					"$verticalGroup": "par l {seq {comp panel2:::p::p, space :::p, comp scrollPane1::::480:x, space :::p, comp panel3:::p::p}}"
 				} ) {
 					name: "dialogPane"
 					"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+					auxiliary() {
+						"JavaCodeGenerator.variableName": "datap"
+					}
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 						name: "scrollPane1"
 						"autoscrolls": true
@@ -122,6 +179,7 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "button4"
 							"text": "添加"
+							"font": new java.awt.Font( "微软雅黑", 0, 12 )
 							auxiliary() {
 								"JavaCodeGenerator.variableName": "add"
 							}
@@ -150,15 +208,19 @@ new FormModel {
 					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": "学生数据"
+					"enabled": false
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 					"$horizontalGroup": "par l {comp panel4:::::x, comp panel5::l:::x}"
-					"$verticalGroup": "par l {seq l {comp panel4:::p::p, space :::p, comp panel5:::p::p, space :0:309:x}}"
+					"$verticalGroup": "par l {seq l {comp panel4:::p:36:p, space :::p, comp panel5:::p::p, space :0:309:x}}"
 				} ) {
 					name: "panel1"
+					auxiliary() {
+						"JavaCodeGenerator.variableName": "optionp"
+					}
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq l {comp button2:::p:104:p, space :p:29:p, comp textField2:::p:173:p, space s:::p, comp textField3:::p:164:p, space s:::p, comp comboBox2:::p:104:p, space ::18:x, comp comboBox1:::p:109:p, space :::p}}"
-						"$verticalGroup": "par t {seq t {space :0:0:p, par l {seq {comp comboBox1:::::x, space :::p}, par b {comp button2::b:p::p, comp textField3::b:p:31:p, comp comboBox2::b:::x, comp textField2::b:p:31:p}}}}"
+						"$horizontalGroup": "par l {seq l {comp button2:::p:104:p, space :p:29:p, comp textField2:::p:173:p, space s:::p, comp textField3:::p:164:p, space s:::p, comp comboBox2:::p:104:p, space ::18:x, comp comboBox1:::p:109:p, space :::p}, seq l {space :p:172:p, comp scrollPane2:::p:100:p, space ::471:x}}"
+						"$verticalGroup": "par t {seq t {space :0:0:p, par l {comp comboBox1:::::x, seq {par b {comp button2::b:p::p, comp textField3::b:p:31:p, comp comboBox2::b:::x, comp textField2::b:p:31:p}, space :::p, comp scrollPane2:::p:100:p}}, space :::p}}"
 					} ) {
 						name: "panel4"
 						add( new FormComponent( "javax.swing.JTextField" ) {
@@ -281,6 +343,9 @@ new FormModel {
 								addElement( "100" )
 							}
 						} )
+						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+							name: "scrollPane2"
+						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 						"$horizontalGroup": "par l {seq l {comp button3:::p:88:p, space :0:655:x}}"
@@ -294,6 +359,7 @@ new FormModel {
 					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": "数据操作"
+					"enabled": false
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "North"
