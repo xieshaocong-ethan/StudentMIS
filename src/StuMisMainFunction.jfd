@@ -63,8 +63,6 @@ new FormModel {
 					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": "首页"
-					"disabledIcon": sfield com.jformdesigner.model.FormObject NULL_VALUE
-					"enabled": false
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 					"$horizontalGroup": "par l {comp scrollPane1::l:::x, seq l {par t:::p {comp panel3:::::x, comp panel2:::::x}, space :::x}}"
@@ -92,7 +90,7 @@ new FormModel {
 							"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
 							"surrendersFocusOnKeystroke": true
 							auxiliary() {
-								"JavaCodeGenerator.preInitCode": "stuinfo = new StuMIS_StuInfo();\n        try {\n            stuinfo.getdata(\"select * from stu\");\n        } catch (Exception e) {\n            e.printStackTrace();\n        }\n        tm = new DefaultTableModel(stuinfo.rsrow,stuinfo.rshead);\n        table1 = new JTable(tm);"
+								"JavaCodeGenerator.preInitCode": "stuinfo = new StuMisInfo();\n        try {\n            stuinfo.getdata(\"select * from stu\");\n        } catch (Exception e) {\n            e.printStackTrace();\n        }\n        tm = new DefaultTableModel(stuinfo.rsrow,stuinfo.rshead);\n        table1 = new JTable(tm);"
 								"JavaCodeGenerator.postInitCode": "tm.addTableModelListener(e -> tmlistener(e));"
 							}
 						} )
@@ -212,150 +210,34 @@ new FormModel {
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 					"$horizontalGroup": "par l {comp panel4:::::x, comp panel5::l:::x}"
-					"$verticalGroup": "par l {seq l {comp panel4:::p:36:p, space :::p, comp panel5:::p::p, space :0:309:x}}"
+					"$verticalGroup": "par l {seq l {comp panel4:::p:36:p, space :::p, comp panel5:::p::p, space :0:389:x}}"
 				} ) {
 					name: "panel1"
 					auxiliary() {
 						"JavaCodeGenerator.variableName": "optionp"
 					}
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq l {comp button2:::p:104:p, space :p:29:p, comp textField2:::p:173:p, space s:::p, comp textField3:::p:164:p, space s:::p, comp comboBox2:::p:104:p, space ::18:x, comp comboBox1:::p:109:p, space :::p}, seq l {space :p:172:p, comp scrollPane2:::p:100:p, space ::471:x}}"
-						"$verticalGroup": "par t {seq t {space :0:0:p, par l {comp comboBox1:::::x, seq {par b {comp button2::b:p::p, comp textField3::b:p:31:p, comp comboBox2::b:::x, comp textField2::b:p:31:p}, space :::p, comp scrollPane2:::p:100:p}}, space :::p}}"
+						"$horizontalGroup": "par l {seq {space :p:172:p, comp scrollPane2:::p:100:p, space ::471:x}, comp button2::l::743:x}"
+						"$verticalGroup": "par t {seq t {comp button2:::p:36:p, space :::p, comp scrollPane2:::p:100:p, space :::x}}"
 					} ) {
 						name: "panel4"
-						add( new FormComponent( "javax.swing.JTextField" ) {
-							name: "textField2"
-						} )
-						add( new FormComponent( "javax.swing.JTextField" ) {
-							name: "textField3"
-						} )
-						add( new FormComponent( "javax.swing.JComboBox" ) {
-							name: "comboBox1"
-							"model": new javax.swing.DefaultComboBoxModel {
-								selectedItem: "男"
-								addElement( "男" )
-								addElement( "女" )
-							}
-						} )
-						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "button2"
-							"text": "text"
-						} )
-						add( new FormComponent( "javax.swing.JComboBox" ) {
-							name: "comboBox2"
-							"model": new javax.swing.DefaultComboBoxModel {
-								selectedItem: "5"
-								addElement( "5" )
-								addElement( "6" )
-								addElement( "7" )
-								addElement( "8" )
-								addElement( "9" )
-								addElement( "10" )
-								addElement( "11" )
-								addElement( "12" )
-								addElement( "13" )
-								addElement( "14" )
-								addElement( "15" )
-								addElement( "16" )
-								addElement( "17" )
-								addElement( "18" )
-								addElement( "19" )
-								addElement( "20" )
-								addElement( "21" )
-								addElement( "22" )
-								addElement( "23" )
-								addElement( "24" )
-								addElement( "25" )
-								addElement( "26" )
-								addElement( "27" )
-								addElement( "28" )
-								addElement( "29" )
-								addElement( "30" )
-								addElement( "31" )
-								addElement( "32" )
-								addElement( "33" )
-								addElement( "34" )
-								addElement( "35" )
-								addElement( "36" )
-								addElement( "37" )
-								addElement( "38" )
-								addElement( "39" )
-								addElement( "40" )
-								addElement( "41" )
-								addElement( "42" )
-								addElement( "43" )
-								addElement( "44" )
-								addElement( "45" )
-								addElement( "46" )
-								addElement( "47" )
-								addElement( "48" )
-								addElement( "49" )
-								addElement( "50" )
-								addElement( "51" )
-								addElement( "52" )
-								addElement( "53" )
-								addElement( "54" )
-								addElement( "55" )
-								addElement( "56" )
-								addElement( "57" )
-								addElement( "58" )
-								addElement( "59" )
-								addElement( "60" )
-								addElement( "61" )
-								addElement( "62" )
-								addElement( "63" )
-								addElement( "64" )
-								addElement( "65" )
-								addElement( "66" )
-								addElement( "67" )
-								addElement( "68" )
-								addElement( "69" )
-								addElement( "70" )
-								addElement( "71" )
-								addElement( "72" )
-								addElement( "73" )
-								addElement( "74" )
-								addElement( "75" )
-								addElement( "76" )
-								addElement( "77" )
-								addElement( "78" )
-								addElement( "79" )
-								addElement( "80" )
-								addElement( "81" )
-								addElement( "82" )
-								addElement( "83" )
-								addElement( "84" )
-								addElement( "85" )
-								addElement( "86" )
-								addElement( "87" )
-								addElement( "88" )
-								addElement( "89" )
-								addElement( "90" )
-								addElement( "91" )
-								addElement( "92" )
-								addElement( "93" )
-								addElement( "94" )
-								addElement( "95" )
-								addElement( "96" )
-								addElement( "97" )
-								addElement( "98" )
-								addElement( "99" )
-								addElement( "100" )
-							}
-						} )
 						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 							name: "scrollPane2"
 						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "button2"
+							"text": "切换账号"
+							auxiliary() {
+								"JavaCodeGenerator.variableName": "logout"
+							}
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "logoutActionPerformed", true ) )
+						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq l {comp button3:::p:88:p, space :0:655:x}}"
-						"$verticalGroup": "par l {seq l {comp button3:::p:38:p, space :0:163:x}}"
+						"$horizontalGroup": "par l {space :0:743:x}"
+						"$verticalGroup": "par l {space :0:121:x}"
 					} ) {
 						name: "panel5"
-						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "button3"
-							"text": "text"
-						} )
 					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": "数据操作"

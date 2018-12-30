@@ -1,30 +1,28 @@
+import org.apache.commons.lang3.StringUtils;
+
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Vector;
+import java.util.*;
 import javax.swing.*;
 import javax.swing.GroupLayout;
-import javax.swing.border.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
-import com.intellij.uiDesigner.core.*;
-
-import com.jgoodies.forms.factories.*;
-import com.jgoodies.forms.layout.*;
 /*
  * Created by JFormDesigner on Wed Dec 19 15:26:14 CST 2018
  */
 
-
-
 /**
+ * StuMisMainFunction  class
+ *
  * @author Ethantse
+ * @date 2018/12/28
  */
-public class StuMIS_Mainfunc extends JFrame {
-    DefaultTableModel tm;
-    StuMIS_StuInfo stuinfo;
-    boolean iscancel= false;
+public class StuMisMainFunction extends JFrame {
+    private DefaultTableModel tm;
+    private StuMisInfo stuinfo;
+    private boolean iscancel= false;
 
-    public StuMIS_Mainfunc() {
+    public StuMisMainFunction() {
         initComponents();
     }
 
@@ -33,9 +31,11 @@ public class StuMIS_Mainfunc extends JFrame {
     }
 
     public void panelshake(JFrame frame){
-        int num = 10;
+        //窗体
+        int num = 15;
+        int i;
         Point point =frame.getLocationOnScreen();
-        for (int i = 10; i > 0; i--) {
+        for (i = 10; i > 0; i--) {
             for (int j = num; j > 0; j--) {
                 point.y += i;
                 frame.setLocation(point);
@@ -61,10 +61,11 @@ public class StuMIS_Mainfunc extends JFrame {
     }
 
     private void createUIComponents() {
-        // TODO: add custom component creation code here
+        // none
     }
 
     private void cancelButtonActionPerformed(ActionEvent e) {
+        //取消编辑
         iscancel = true;
         stuinfo.getdata("select * from Stu");
         tm.setDataVector(stuinfo.rsrow,stuinfo.rshead);
@@ -73,6 +74,7 @@ public class StuMIS_Mainfunc extends JFrame {
     }
 
     private void selectActionPerformed(ActionEvent e) {
+        //查询
         iscancel = true;
         String taText = tf1.getText().trim();
         String targets = stuinfo.keyWord(taText);
@@ -86,6 +88,7 @@ public class StuMIS_Mainfunc extends JFrame {
         }
     }
     private void tmlistener(TableModelEvent e) {
+        //表格监听
         if(e.getType()==TableModelEvent.UPDATE && !iscancel){
             stuinfo.editdata(table1,e.getFirstRow(),e.getColumn(),label1,label3,label4,label5);
         }
@@ -93,7 +96,7 @@ public class StuMIS_Mainfunc extends JFrame {
     }
 
     private void deleteActionPerformed(ActionEvent e) {
-        // TODO add your code here
+        // 删除
         stuinfo.deletedata(table1);
         tm.fireTableDataChanged();
         stuinfo.getdata("select * from Stu");
@@ -102,18 +105,19 @@ public class StuMIS_Mainfunc extends JFrame {
     }
 
     private void reseteditActionPerformed(ActionEvent e) {
-        // TODO add your code here
+        // 恢复编辑
         setIscancel();
         editlabel.setVisible(false);
     }
 
     private void loginKeyTyped(KeyEvent e) {
-        // TODO add your code here
-        if (e.getKeyChar()==10) {
+        // 登入
+        int enter = 10;
+        if (e.getKeyChar()== enter) {
             String username = username1.getText();
-            if (stuinfo.Userlogin(username) && !(username == null)) {
+            if (stuinfo.Userlogin(username) && StringUtils.isNotBlank(username)) {
                 String password = new String(password1.getPassword());
-                if(stuinfo.isUserin(username,password) && !(password == null)) {
+                if(stuinfo.isUserin(username,password) && StringUtils.isNotBlank(password)) {
                     tabp1.setEnabledAt(1,true);
                     tabp1.setEnabledAt(2,true);
                     tabp1.setSelectedIndex(1);
@@ -129,6 +133,11 @@ public class StuMIS_Mainfunc extends JFrame {
                panelshake(this);
             }
         }
+    }
+
+    private void logoutActionPerformed(ActionEvent e) {
+        //切换账号
+
     }
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
@@ -163,14 +172,9 @@ public class StuMIS_Mainfunc extends JFrame {
         label5 = new JLabel();
         optionp = new JPanel();
         panel4 = new JPanel();
-        textField2 = new JTextField();
-        textField3 = new JTextField();
-        comboBox1 = new JComboBox<>();
-        button2 = new JButton();
-        comboBox2 = new JComboBox<>();
         scrollPane2 = new JScrollPane();
+        logout = new JButton();
         panel5 = new JPanel();
-        button3 = new JButton();
 
         //======== this ========
         setFont(new Font("\u9ed1\u4f53", Font.PLAIN, 15));
@@ -267,7 +271,7 @@ public class StuMIS_Mainfunc extends JFrame {
                     scrollPane1.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.PLAIN, 12));
 
                     //---- table1 ----
-                    stuinfo = new StuMIS_StuInfo();
+                    stuinfo = new StuMisInfo();
                             try {
                                 stuinfo.getdata("select * from stu");
                             } catch (Exception e) {
@@ -282,7 +286,7 @@ public class StuMIS_Mainfunc extends JFrame {
                     table1.setFont(new Font("\u9ed1\u4f53", Font.PLAIN, 12));
                     table1.setBorder(null);
                     table1.setSurrendersFocusOnKeystroke(true);
-                    tm.addTableModelListener(e -> tmlistener(e));
+                    tm.addTableModelListener(this::tmlistener);
                     scrollPane1.setViewportView(table1);
                 }
 
@@ -297,7 +301,7 @@ public class StuMIS_Mainfunc extends JFrame {
                     select.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.PLAIN, 12));
                     select.setActionCommand("select");
                     select.setPreferredSize(new Dimension(57, 25));
-                    select.addActionListener(e -> selectActionPerformed(e));
+                    select.addActionListener(this::selectActionPerformed);
 
                     //---- tf1 ----
                     tf1.setToolTipText("\u9700\u8981\u663e\u793a\u7684\u5b66\u751f\u59d3\u540d");
@@ -329,7 +333,7 @@ public class StuMIS_Mainfunc extends JFrame {
                     //---- cancel ----
                     cancel.setText("\u53d6\u6d88\u4fee\u6539");
                     cancel.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.PLAIN, 12));
-                    cancel.addActionListener(e -> cancelButtonActionPerformed(e));
+                    cancel.addActionListener(this::cancelButtonActionPerformed);
 
                     //---- label1 ----
                     label1.setText("\u8bf7\u8f93\u5165\u6b63\u786e\u5b66\u53f7");
@@ -346,17 +350,17 @@ public class StuMIS_Mainfunc extends JFrame {
                     //---- delete ----
                     delete.setText("\u5220\u9664");
                     delete.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.PLAIN, 12));
-                    delete.addActionListener(e -> deleteActionPerformed(e));
+                    delete.addActionListener(this::deleteActionPerformed);
 
                     //---- resetedit ----
                     resetedit.setText("\u6062\u590d\u4fee\u6539");
                     resetedit.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.PLAIN, 12));
-                    resetedit.addActionListener(e -> reseteditActionPerformed(e));
+                    resetedit.addActionListener(this::reseteditActionPerformed);
 
                     //---- add ----
                     add.setText("\u6dfb\u52a0");
                     add.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.PLAIN, 12));
-                    add.addActionListener(e -> addActionPerformed(e));
+                    add.addActionListener(this::addActionPerformed);
 
                     //---- label3 ----
                     label3.setText("\u8bf7\u8f93\u5165\u6b63\u786e\u7684\u59d3\u540d");
@@ -445,172 +449,42 @@ public class StuMIS_Mainfunc extends JFrame {
                 //======== panel4 ========
                 {
 
-                    //---- comboBox1 ----
-                    comboBox1.setModel(new DefaultComboBoxModel<>(new String[] {
-                        "\u7537",
-                        "\u5973"
-                    }));
-
-                    //---- button2 ----
-                    button2.setText("text");
-
-                    //---- comboBox2 ----
-                    comboBox2.setModel(new DefaultComboBoxModel<>(new String[] {
-                        "5",
-                        "6",
-                        "7",
-                        "8",
-                        "9",
-                        "10",
-                        "11",
-                        "12",
-                        "13",
-                        "14",
-                        "15",
-                        "16",
-                        "17",
-                        "18",
-                        "19",
-                        "20",
-                        "21",
-                        "22",
-                        "23",
-                        "24",
-                        "25",
-                        "26",
-                        "27",
-                        "28",
-                        "29",
-                        "30",
-                        "31",
-                        "32",
-                        "33",
-                        "34",
-                        "35",
-                        "36",
-                        "37",
-                        "38",
-                        "39",
-                        "40",
-                        "41",
-                        "42",
-                        "43",
-                        "44",
-                        "45",
-                        "46",
-                        "47",
-                        "48",
-                        "49",
-                        "50",
-                        "51",
-                        "52",
-                        "53",
-                        "54",
-                        "55",
-                        "56",
-                        "57",
-                        "58",
-                        "59",
-                        "60",
-                        "61",
-                        "62",
-                        "63",
-                        "64",
-                        "65",
-                        "66",
-                        "67",
-                        "68",
-                        "69",
-                        "70",
-                        "71",
-                        "72",
-                        "73",
-                        "74",
-                        "75",
-                        "76",
-                        "77",
-                        "78",
-                        "79",
-                        "80",
-                        "81",
-                        "82",
-                        "83",
-                        "84",
-                        "85",
-                        "86",
-                        "87",
-                        "88",
-                        "89",
-                        "90",
-                        "91",
-                        "92",
-                        "93",
-                        "94",
-                        "95",
-                        "96",
-                        "97",
-                        "98",
-                        "99",
-                        "100"
-                    }));
+                    //---- logout ----
+                    logout.setText("\u5207\u6362\u8d26\u53f7");
+                    logout.addActionListener(this::logoutActionPerformed);
 
                     GroupLayout panel4Layout = new GroupLayout(panel4);
                     panel4.setLayout(panel4Layout);
                     panel4Layout.setHorizontalGroup(
                         panel4Layout.createParallelGroup()
                             .addGroup(panel4Layout.createSequentialGroup()
-                                .addComponent(button2, GroupLayout.PREFERRED_SIZE, 104, GroupLayout.PREFERRED_SIZE)
-                                .addGap(29, 29, 29)
-                                .addComponent(textField2, GroupLayout.PREFERRED_SIZE, 173, GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(textField3, GroupLayout.PREFERRED_SIZE, 164, GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(comboBox2, GroupLayout.PREFERRED_SIZE, 104, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                                .addComponent(comboBox1, GroupLayout.PREFERRED_SIZE, 109, GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap())
-                            .addGroup(panel4Layout.createSequentialGroup()
                                 .addGap(172, 172, 172)
                                 .addComponent(scrollPane2, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap(471, Short.MAX_VALUE))
+                            .addComponent(logout, GroupLayout.DEFAULT_SIZE, 743, Short.MAX_VALUE)
                     );
                     panel4Layout.setVerticalGroup(
                         panel4Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                             .addGroup(panel4Layout.createSequentialGroup()
-                                .addGap(0, 0, 0)
-                                .addGroup(panel4Layout.createParallelGroup()
-                                    .addComponent(comboBox1)
-                                    .addGroup(panel4Layout.createSequentialGroup()
-                                        .addGroup(panel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                            .addComponent(button2)
-                                            .addComponent(textField3, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(comboBox2)
-                                            .addComponent(textField2, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(scrollPane2, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)))
-                                .addContainerGap())
+                                .addComponent(logout, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(scrollPane2, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     );
                 }
 
                 //======== panel5 ========
                 {
 
-                    //---- button3 ----
-                    button3.setText("text");
-
                     GroupLayout panel5Layout = new GroupLayout(panel5);
                     panel5.setLayout(panel5Layout);
                     panel5Layout.setHorizontalGroup(
                         panel5Layout.createParallelGroup()
-                            .addGroup(panel5Layout.createSequentialGroup()
-                                .addComponent(button3, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 655, Short.MAX_VALUE))
+                            .addGap(0, 743, Short.MAX_VALUE)
                     );
                     panel5Layout.setVerticalGroup(
                         panel5Layout.createParallelGroup()
-                            .addGroup(panel5Layout.createSequentialGroup()
-                                .addComponent(button3, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 163, Short.MAX_VALUE))
+                            .addGap(0, 121, Short.MAX_VALUE)
                     );
                 }
 
@@ -627,7 +501,7 @@ public class StuMIS_Mainfunc extends JFrame {
                             .addComponent(panel4, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(panel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addGap(0, 309, Short.MAX_VALUE))
+                            .addGap(0, 389, Short.MAX_VALUE))
                 );
             }
             tabp1.addTab("\u6570\u636e\u64cd\u4f5c", optionp);
@@ -664,13 +538,8 @@ public class StuMIS_Mainfunc extends JFrame {
     private JLabel label5;
     private JPanel optionp;
     private JPanel panel4;
-    private JTextField textField2;
-    private JTextField textField3;
-    private JComboBox<String> comboBox1;
-    private JButton button2;
-    private JComboBox<String> comboBox2;
     private JScrollPane scrollPane2;
+    private JButton logout;
     private JPanel panel5;
-    private JButton button3;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

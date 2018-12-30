@@ -1,35 +1,34 @@
 
 import javax.swing.*;
-import javax.swing.table.TableModel;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.util.regex.Pattern;
-
-public class StuMIS_StuInfo {
+/**
+ * StuMisInfo class
+ *
+ * @author Ethantse
+ * @date 2018/12/26
+ */
+public class StuMisInfo {
      Vector rsrow;
      Vector rshead;
-     ArrayList<String> userrow;
-     StuMIS_Database db;
-     Connection conn;
-     PreparedStatement ps;
-     PreparedStatement ups;
-     PreparedStatement pps;
-     ResultSet rs;
-     ResultSet urs;
-     ResultSet prs;
-     boolean isexe = false;
-     boolean isedit = false;
-     String esql;
-public StuMIS_StuInfo() {
-    db = new StuMIS_Database();
+     private ArrayList userrow;
+     private Connection conn;
+     private PreparedStatement ps;
+     private ResultSet urs;
+     private boolean isexe = false;
+     private boolean isedit = false;
+     private String esql;
+public StuMisInfo() {
+    StuMisDatabase db = new StuMisDatabase();
     conn = db.con1();
 }
 
     public void getdata(String sql) {
         try {
             ps = conn.prepareStatement(sql);
-            rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
             rshead = new Vector();
             rsrow = new Vector();
             ResultSetMetaData rsmd = rs.getMetaData();
@@ -45,15 +44,18 @@ public StuMIS_StuInfo() {
     }
 
     public String keyWord(String key){
-        //String key = this.text1.getText().trim();
         String type = null;
-        if(Pattern.matches("\\d{8}",key)){
+        String kregex1 = "\\d{8}";
+        String kregex2 = "([男]|[女])+$";
+        String kregex3 = "^[0-9]*$";
+        String kregex4 = "^[\u4E00-\u9FA5]+$";
+        if(Pattern.matches(kregex1,key)){
             type = "Sno";
-        }else if(Pattern.matches("([男]|[女])+$",key)){
+        }else if(Pattern.matches(kregex2,key)){
             type = "Sgender";
-        }else if(Pattern.matches("^[0-9]*$",key)){
+        }else if(Pattern.matches(kregex3,key)){
             type = "Sage";
-        }else if(Pattern.matches("^[\u4E00-\u9FA5]+$",key)){
+        }else if(Pattern.matches(kregex4,key)){
             type = "Sname";
         }
         return type;
@@ -69,7 +71,7 @@ public StuMIS_StuInfo() {
         return rscolumn;
     }
     public ArrayList passwordgetrow(ResultSet rs, ResultSetMetaData rsmd) throws SQLException {
-        ArrayList<String> rscolumn = new ArrayList<String>();
+        ArrayList<String> rscolumn = new ArrayList<>();
         for(int o = 1; o <= rsmd.getColumnCount();o++) {
             rscolumn.add(rs.getString(o));
         }
@@ -87,7 +89,7 @@ public StuMIS_StuInfo() {
     }
     public void selectexedata(String sql) {
         try {
-            ups = conn.prepareStatement(sql);
+            PreparedStatement ups = conn.prepareStatement(sql);
             urs = ups.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -128,21 +130,25 @@ public StuMIS_StuInfo() {
         String regex4 = "[男女]{1}";
         String sqlitem;
         String sqllocaitem;
-        if(c == 0) {
+        int sno = 0;
+        int sname = 1;
+        int sage = 2;
+        int sgender = 3;
+        if(c == sno) {
             Object davalue = tb.getValueAt(r, 1);
             sqlitem = "Sno";
             sqllocaitem = "Sname";
             seleditdata(regex1,sqlitem,sqllocaitem,dvalue,davalue,stunolb);
-        } else if(c == 1) {
+        } else if(c == sname) {
             sqlitem = "Sname";
             sqllocaitem = "Sno";
             seleditdata(regex2,sqlitem,sqllocaitem,dvalue,divalue,stunamelb);
 
-        } else if(c == 2) {
+        } else if(c == sage) {
             sqlitem = "Sage";
             sqllocaitem = "Sno";
             seleditdata(regex3,sqlitem,sqllocaitem,dvalue,divalue,stuagelb);
-        } else if(c == 3) {
+        } else if(c == sgender) {
             sqlitem = "Sgender";
             sqllocaitem = "Sno";
             seleditdata(regex4,sqlitem,sqllocaitem,dvalue,divalue,stugenderlb);
@@ -170,31 +176,22 @@ public StuMIS_StuInfo() {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        if(flag1) {
-            return true;
-        }else{
-            return false;
-        }
+        return flag1;
 
     }
     public boolean isUserin(Object user,Object password) {
         String sql = "select userpassword from user where User = '"+user+"'";
         try {
-            pps = conn.prepareStatement(sql);
-            prs = pps.executeQuery();
+            PreparedStatement pps = conn.prepareStatement(sql);
+            ResultSet prs = pps.executeQuery();
             userrow  = new ArrayList();
-            ResultSetMetaData rsmd = prs.getMetaData();
             while (prs.next()) {
                 userrow.add(prs.getString("userpassword"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        if(userrow.contains(password)) {
-            return true;
-        } else {
-            return false;
-        }
+        return userrow.contains(password);
     }
 
 }

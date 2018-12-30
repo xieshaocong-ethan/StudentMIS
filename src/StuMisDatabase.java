@@ -1,26 +1,31 @@
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import java.beans.PropertyVetoException;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
+/**
+ * StuMisDatabase class
+ *
+ * @author Ethantse
+ * @date 2018/12/20
+ */
 
-public class StuMIS_Database {
+public class StuMisDatabase {
     public Connection con1() {
         Properties pr = new Properties();
-        String c3p0Properties = this.getClass().getClassLoader().getResource("c3p0.properties").getPath();
-        try {
+        //String c3p0Properties = Objects.requireNonNull(this.getClass().getClassLoader().getResource("c3p0.properties")).getPath();
+        InputStream c3p0Properties = this.getClass().getResourceAsStream("c3p0.properties");
+/*        try {
             c3p0Properties = URLDecoder.decode(c3p0Properties, "utf-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-        }
-        java.io.File conc3p0file = new java.io.File(c3p0Properties);
+        }*/
+        /*java.io.File conc3p0file = new java.io.File(c3p0Properties);*/
         try {
-            pr.load(new FileInputStream(conc3p0file));
+            pr.load(c3p0Properties);
         } catch (IOException e) {
             e.printStackTrace();
         }
