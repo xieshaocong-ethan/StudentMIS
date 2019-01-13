@@ -2,6 +2,7 @@
 import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.regex.Pattern;
 /**
@@ -43,9 +44,30 @@ public StuMisInfo() {
         }
     }
 
+    public List<Student> getlistdata() {
+        List<Student> students = new ArrayList<>();
+        Student student = null;
+        String sql = "select * from stu";
+        try {
+            ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                student = new Student();
+                student.setSno(rs.getString(1));
+                student.setSname(rs.getString(2));
+                student.setSage(rs.getInt(3));
+                student.setSgender(rs.getString(4));
+                students.add(student);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } return students;
+    }
+
     public String keyWord(String key){
         String type = null;
-        String kregex1 = "\\d{8}";
+        String kregex1 = "\\d{6}";
         String kregex2 = "([男]|[女])+$";
         String kregex3 = "^[0-9]*$";
         String kregex4 = "^[\u4E00-\u9FA5]+$";
@@ -105,7 +127,6 @@ public StuMisInfo() {
             e1.printStackTrace();
         }
     }
-
     public void seleditdata(String regex,String sqlitem,String sqllocaitem,Object tarv,Object locav,JLabel lb) {
         if (Pattern.matches(regex,(String)tarv)) {
             esql ="update Stu set "+sqlitem+"='" + tarv + "'where "+sqllocaitem+" = '" + locav + "'";
@@ -120,11 +141,10 @@ public StuMisInfo() {
             }
         }
     }
-
     public void editdata(JTable tb, int r, int c, JLabel stunolb,JLabel stunamelb,JLabel stuagelb,JLabel stugenderlb) {
      Object dvalue = tb.getValueAt(r, c);
         Object divalue = tb.getValueAt(r, 0);
-        String regex1 = "\\d{8}";
+        String regex1 = "\\d{6}";
         String regex2 = "[\\u4E00-\\u9FA5·\\u4E00-\\u9FA5]{2,20}";
         String regex3 = "\\d{2}";
         String regex4 = "[男女]{1}";
@@ -164,8 +184,22 @@ public StuMisInfo() {
         }
     }
     public void adddata(){
-        String sql = "insert into Stu values('null','null,18,'null')";
+        String sql = "insert into Stu values('null','null',18,'男')";
         exedata(sql);
+    }
+    public void addindata(Student student){
+    //String[] row = arow.toString().replace("[","").replace("]","").split(",");
+        String sql ="insert into stu(Sno, Sname, Sage, Sgender) values('"+student.getSno()+"', '"+student.getSname()+"', '"+String.valueOf(student.getSage())+"', '"+student.getSgender()+"')";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    /*double aget = Double.parseDouble(row[2]);
+    int age = (int)aget;
+        String sql = "insert into Stu values('"+row[0]+"','"+row[1]+"',"+age+",'"+row[3]+"')";
+        exedata(sql);*/
     }
     public boolean Userlogin(Object user) {
         String sql = "select User from user where User = '"+user+"'";
@@ -181,17 +215,30 @@ public StuMisInfo() {
     }
     public boolean isUserin(Object user,Object password) {
         String sql = "select userpassword from user where User = '"+user+"'";
-        try {
-            PreparedStatement pps = conn.prepareStatement(sql);
-            ResultSet prs = pps.executeQuery();
+        selectexedata(sql);
             userrow  = new ArrayList();
-            while (prs.next()) {
-                userrow.add(prs.getString("userpassword"));
+        try {
+            while (urs.next()) {
+                    userrow.add(urs.getString("userpassword"));
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return userrow.contains(password);
+    }
+    public String userrole(Object user) {
+        String userrole = null;
+    String sql = "select Authority from user where User = '"+user+"'";
+        try {
+            selectexedata(sql);
+            while (urs.next()) {
+        userrole = urs.getString("Authority");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return userrole;
     }
 
 }

@@ -1,11 +1,22 @@
+import com.jgoodies.forms.factories.*;
 import org.apache.commons.lang3.StringUtils;
+import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
+import org.jb2011.lnf.beautyeye.*;
+import org.jb2011.lnf.beautyeye.ch20_filechooser.BEFileChooserUICross;
+
+
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.event.TableModelEvent;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.InsetsUIResource;
 import javax.swing.table.DefaultTableModel;
 /*
  * Created by JFormDesigner on Wed Dec 19 15:26:14 CST 2018
@@ -20,7 +31,40 @@ import javax.swing.table.DefaultTableModel;
 public class StuMisMainFunction extends JFrame {
     private DefaultTableModel tm;
     private StuMisInfo stuinfo;
-    private boolean iscancel= false;
+    private boolean iscancel = false;
+    public void refresh() {
+        iscancel = true;
+        stuinfo.getdata("select * from Stu");
+        tm.setDataVector(stuinfo.rsrow,stuinfo.rshead);
+        tm.fireTableDataChanged();
+        iscancel = false;
+    }
+
+    public void useralleditrole(boolean status) {
+        boolean irstatus =!status;
+        iscancel = irstatus;
+        cancel.setEnabled(status);
+        delete.setEnabled(status);
+        resetedit.setEnabled(status);
+        add.setEnabled(status);
+        button3.setEnabled(status);
+        fileinbtm.setEnabled(status);
+        role.setVisible(irstatus);
+    }
+    public void loginstatus(boolean status){
+        boolean irstatus =!status;
+            tabp1.setEnabledAt(1, true);
+            tabp1.setEnabledAt(2, true);
+            if(status) {
+                tabp1.setSelectedIndex(1);
+            } else {
+                tabp1.setSelectedIndex(0);
+            }
+            username1.setVisible(irstatus);
+            ulb.setVisible(irstatus);
+            password1.setVisible(irstatus);
+            plb.setVisible(irstatus);
+        }
 
     public StuMisMainFunction() {
         initComponents();
@@ -30,24 +74,7 @@ public class StuMisMainFunction extends JFrame {
         iscancel = false;
     }
 
-    public void panelshake(JFrame frame){
-        //窗体
-        int num = 15;
-        int i;
-        Point point =frame.getLocationOnScreen();
-        for (i = 10; i > 0; i--) {
-            for (int j = num; j > 0; j--) {
-                point.y += i;
-                frame.setLocation(point);
-                point.x += i;
-                frame.setLocation(point);
-                point.y -= i;
-                frame.setLocation(point);
-                point.x -= i;
-                frame.setLocation(point);
-            }
-        }
-    }
+
 
     private void addActionPerformed(ActionEvent e) {
         // TODO add your code here
@@ -55,7 +82,7 @@ public class StuMisMainFunction extends JFrame {
         vv.addElement("null");
         vv.addElement("null");
         vv.addElement(18);
-        vv.addElement("null");
+        vv.addElement("男");
         tm.addRow(vv);
         stuinfo.adddata();
     }
@@ -67,9 +94,7 @@ public class StuMisMainFunction extends JFrame {
     private void cancelButtonActionPerformed(ActionEvent e) {
         //取消编辑
         iscancel = true;
-        stuinfo.getdata("select * from Stu");
-        tm.setDataVector(stuinfo.rsrow,stuinfo.rshead);
-        tm.fireTableDataChanged();
+        refresh();
         editlabel.setVisible(true);
     }
 
@@ -97,11 +122,13 @@ public class StuMisMainFunction extends JFrame {
 
     private void deleteActionPerformed(ActionEvent e) {
         // 删除
+        iscancel = true;
         stuinfo.deletedata(table1);
         tm.fireTableDataChanged();
         stuinfo.getdata("select * from Stu");
         tm.setDataVector(stuinfo.rsrow,stuinfo.rshead);
-        tm.fireTableDataChanged();
+        refresh();
+        iscancel = false;
     }
 
     private void reseteditActionPerformed(ActionEvent e) {
@@ -118,35 +145,134 @@ public class StuMisMainFunction extends JFrame {
             if (stuinfo.Userlogin(username) && StringUtils.isNotBlank(username)) {
                 String password = new String(password1.getPassword());
                 if(stuinfo.isUserin(username,password) && StringUtils.isNotBlank(password)) {
-                    tabp1.setEnabledAt(1,true);
-                    tabp1.setEnabledAt(2,true);
-                    tabp1.setSelectedIndex(1);
-                    username1.setVisible(false);
-                    ulb.setVisible(false);
-                    password1.setVisible(false);
-                    plb.setVisible(false);
+                    loginstatus(true);
+                    if(stuinfo.userrole(username).equals("1")){
+                        useralleditrole(false);
+                    } else{
+                        useralleditrole(true);
+                    }
 
                 } else {
-                    panelshake(this);
+                    Panelshake.panelshake(this);
                 }
             } else {
-               panelshake(this);
+               Panelshake.panelshake(this);
             }
         }
     }
 
     private void logoutActionPerformed(ActionEvent e) {
         //切换账号
+        loginstatus(false);
+        password1.setText("");
+        username1.setText("");
+    }
 
+    private void fileInActionPerformed(ActionEvent e) {
+        int result = fileinchooser.showOpenDialog(this);
+        if(result == JFileChooser.APPROVE_OPTION) {
+            //iscancel = true;
+            File infile = fileinchooser.getSelectedFile();
+            List<Student> students = null;
+            Student student = null;
+            try {
+                students = new StuMisPoi().readexcel(infile);
+            } catch(IOException e1){
+                e1.printStackTrace();
+            }
+                for (int i = 0; i < students.size(); i++) {
+                    student = students.get(i);
+                stuinfo.addindata(student);
+            }
+            tabp1.setSelectedIndex(1);
+            refresh();
+            //iscancel = false;
+        }
+    }
+
+    private void fileoutActionPerformed(ActionEvent e) {
+        int result = fileoutchooser.showSaveDialog(this);
+        new BEFileChooserUICross(fileinchooser);
+        if(result == JFileChooser.APPROVE_OPTION) {
+            List<Student> students = stuinfo.getlistdata();
+        File file = fileoutchooser.getSelectedFile();
+        String filename = fileoutchooser.getName(file);
+        if(filename == null || filename.trim().length() == 0){
+        JOptionPane.showMessageDialog(panel5,"文件名为空");
+        }
+        if(file.isFile()) {
+            filename =file.getName();
+            if(file.exists()) {
+                int i = JOptionPane.showConfirmDialog(panel5, "该文件已经存在，确定要覆盖吗？");
+                    if(i == JOptionPane.YES_OPTION){
+                        try {
+                            StuMisPoi.xlsDto2Excel(students,file);
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                    else{ return;}
+            }
+        } else{
+            if(filename.indexOf(".xlsx")==-1) {
+                file = new File(fileoutchooser.getCurrentDirectory(), filename + ".xlsx");
+                try {
+                    file.createNewFile();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                System.out.println("renamed");
+                System.out.println(file.getName());
+                try {
+                    StuMisPoi.xlsDto2Excel(students,file);
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+
+            } else {
+                file = new File(fileoutchooser.getCurrentDirectory(), filename);
+                try {
+                    file.createNewFile();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                System.out.println("renamed");
+                System.out.println(file.getName());
+                try {
+                    StuMisPoi.xlsDto2Excel(students,file);
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+        }
+    }
+
+    private void refreshActionPerformed(ActionEvent e) {
+        refresh();
     }
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
+        try {
+                            BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.osLookAndFeelDecorated;
+                            BeautyEyeLNFHelper.translucencyAtFrameInactive = true;
+                            UIManager.setLookAndFeel(new BeautyEyeLookAndFeelCross());
+                            UIManager.put("RootPane.setupButtonVisible", false);
+                            UIManager.put("TabbedPane.tabAreaInsets", new InsetsUIResource(0,0,0,0));
+                            UIManager.put("TabbedPane.contentBorderInsets", new InsetsUIResource(0,0,2,0));
+                            UIManager.put("TabbedPane.tabInsets", new InsetsUIResource(3,10,9,10));
+                            Font frameTitleFont = (Font)UIManager.get("InternalFrame.titleFont");
+                            frameTitleFont = frameTitleFont.deriveFont(Font.PLAIN);
+                            UIManager.put("InternalFrame.titleFont", frameTitleFont);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
         tabp1 = new JTabbedPane();
         homep = new JPanel() {
                     @Override
                     public void paintComponent(Graphics g) {
                         super.paintComponent(g);
-                        ImageIcon icon = new ImageIcon("C:\\javaP\\StudentMIS\\src\\3.jpg");
+                        ImageIcon icon = new ImageIcon("C:\\javaP\\StudentMIS\\img\\3.jpg");
                         g.drawImage(icon.getImage(),0,0,getWidth(),getHeight(),this);
                     }
                 };
@@ -170,27 +296,37 @@ public class StuMisMainFunction extends JFrame {
         label3 = new JLabel();
         label4 = new JLabel();
         label5 = new JLabel();
+        refresh = new JButton();
+        role = new JLabel();
         optionp = new JPanel();
         panel4 = new JPanel();
         scrollPane2 = new JScrollPane();
         logout = new JButton();
         panel5 = new JPanel();
+        button3 = new JButton();
+        fileinbtm = new JButton();
+        fileinchooser = new JFileChooser();
+        fileoutchooser = new JFileChooser();
 
         //======== this ========
         setFont(new Font("\u9ed1\u4f53", Font.PLAIN, 15));
         setTitle("\u5b66\u751f\u4fe1\u606f\u7ba1\u7406\u7cfb\u7edf");
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setVisible(true);
+        setMinimumSize(new Dimension(140, 360));
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
 
         //======== tabp1 ========
         {
             tabp1.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.PLAIN, 12));
+            tabp1.setBorder(null);
 
             //======== homep ========
             {
                 homep.setBorder(null);
+                homep.setVerifyInputWhenFocusTarget(false);
+                homep.setAutoscrolls(true);
                 homep.addKeyListener(new KeyAdapter() {
                     @Override
                     public void keyTyped(KeyEvent e) {
@@ -286,7 +422,7 @@ public class StuMisMainFunction extends JFrame {
                     table1.setFont(new Font("\u9ed1\u4f53", Font.PLAIN, 12));
                     table1.setBorder(null);
                     table1.setSurrendersFocusOnKeystroke(true);
-                    tm.addTableModelListener(this::tmlistener);
+                    tm.addTableModelListener(e -> tmlistener(e));
                     scrollPane1.setViewportView(table1);
                 }
 
@@ -301,7 +437,7 @@ public class StuMisMainFunction extends JFrame {
                     select.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.PLAIN, 12));
                     select.setActionCommand("select");
                     select.setPreferredSize(new Dimension(57, 25));
-                    select.addActionListener(this::selectActionPerformed);
+                    select.addActionListener(e -> selectActionPerformed(e));
 
                     //---- tf1 ----
                     tf1.setToolTipText("\u9700\u8981\u663e\u793a\u7684\u5b66\u751f\u59d3\u540d");
@@ -315,14 +451,13 @@ public class StuMisMainFunction extends JFrame {
                             .addGroup(panel2Layout.createSequentialGroup()
                                 .addComponent(tf1, GroupLayout.PREFERRED_SIZE, 671, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(select, GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(select, GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
                     );
                     panel2Layout.setVerticalGroup(
                         panel2Layout.createParallelGroup()
                             .addGroup(panel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(tf1)
-                                .addComponent(select, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE))
+                                .addComponent(tf1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(select, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
                     );
                 }
 
@@ -333,7 +468,7 @@ public class StuMisMainFunction extends JFrame {
                     //---- cancel ----
                     cancel.setText("\u53d6\u6d88\u4fee\u6539");
                     cancel.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.PLAIN, 12));
-                    cancel.addActionListener(this::cancelButtonActionPerformed);
+                    cancel.addActionListener(e -> cancelButtonActionPerformed(e));
 
                     //---- label1 ----
                     label1.setText("\u8bf7\u8f93\u5165\u6b63\u786e\u5b66\u53f7");
@@ -350,17 +485,17 @@ public class StuMisMainFunction extends JFrame {
                     //---- delete ----
                     delete.setText("\u5220\u9664");
                     delete.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.PLAIN, 12));
-                    delete.addActionListener(this::deleteActionPerformed);
+                    delete.addActionListener(e -> deleteActionPerformed(e));
 
                     //---- resetedit ----
                     resetedit.setText("\u6062\u590d\u4fee\u6539");
                     resetedit.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.PLAIN, 12));
-                    resetedit.addActionListener(this::reseteditActionPerformed);
+                    resetedit.addActionListener(e -> reseteditActionPerformed(e));
 
                     //---- add ----
                     add.setText("\u6dfb\u52a0");
                     add.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.PLAIN, 12));
-                    add.addActionListener(this::addActionPerformed);
+                    add.addActionListener(e -> addActionPerformed(e));
 
                     //---- label3 ----
                     label3.setText("\u8bf7\u8f93\u5165\u6b63\u786e\u7684\u59d3\u540d");
@@ -378,6 +513,11 @@ public class StuMisMainFunction extends JFrame {
                     label5.setText("\u8bf7\u8f93\u5165\u6b63\u786e\u7684\u6027\u522b(\u7537or\u5973)");
                     label5.setVisible(false);
                     label5.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.BOLD, 12));
+                    label5.setForeground(new Color(255, 51, 51));
+
+                    //---- refresh ----
+                    refresh.setIcon(new ImageIcon("C:\\javaP\\StudentMIS\\img\\Refresh_16px.png"));
+                    refresh.addActionListener(e -> refreshActionPerformed(e));
 
                     GroupLayout panel3Layout = new GroupLayout(panel3);
                     panel3.setLayout(panel3Layout);
@@ -395,6 +535,8 @@ public class StuMisMainFunction extends JFrame {
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(editlabel)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(refresh, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(add, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(delete, GroupLayout.PREFERRED_SIZE, 107, GroupLayout.PREFERRED_SIZE)
@@ -402,22 +544,31 @@ public class StuMisMainFunction extends JFrame {
                                 .addComponent(resetedit, GroupLayout.PREFERRED_SIZE, 107, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(cancel, GroupLayout.PREFERRED_SIZE, 98, GroupLayout.PREFERRED_SIZE)
-                                .addGap(24, 24, 24))
+                                .addContainerGap())
                     );
                     panel3Layout.setVerticalGroup(
                         panel3Layout.createParallelGroup()
                             .addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(cancel)
-                                .addComponent(resetedit, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(delete, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(add)
                                 .addComponent(label1, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
                                 .addComponent(label3, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
                                 .addComponent(label4, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
                                 .addComponent(label5, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(editlabel))
+                                .addComponent(editlabel)
+                                .addComponent(cancel)
+                                .addComponent(resetedit, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(delete, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(add))
+                            .addGroup(panel3Layout.createSequentialGroup()
+                                .addComponent(refresh)
+                                .addGap(0, 0, Short.MAX_VALUE))
                     );
                 }
+
+                //---- role ----
+                role.setText("\u4f60\u6ca1\u6709\u6743\u9650\uff01");
+                role.setForeground(new Color(255, 51, 51));
+                role.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.BOLD, 12));
+                role.setVisible(false);
 
                 GroupLayout datapLayout = new GroupLayout(datap);
                 datap.setLayout(datapLayout);
@@ -426,21 +577,27 @@ public class StuMisMainFunction extends JFrame {
                         .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(datapLayout.createSequentialGroup()
                             .addGroup(datapLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(panel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(datapLayout.createSequentialGroup()
+                                    .addContainerGap()
+                                    .addComponent(role, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(panel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addComponent(panel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
                 datapLayout.setVerticalGroup(
                     datapLayout.createParallelGroup()
                         .addGroup(datapLayout.createSequentialGroup()
-                            .addComponent(panel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(panel2, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(panel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                            .addGroup(datapLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                .addComponent(panel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(role, GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)))
                 );
             }
-            tabp1.addTab("\u5b66\u751f\u6570\u636e", datap);
+            tabp1.addTab("\u6570\u636e", datap);
             tabp1.setEnabledAt(1, false);
 
             //======== optionp ========
@@ -451,7 +608,8 @@ public class StuMisMainFunction extends JFrame {
 
                     //---- logout ----
                     logout.setText("\u5207\u6362\u8d26\u53f7");
-                    logout.addActionListener(this::logoutActionPerformed);
+                    logout.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.BOLD, 14));
+                    logout.addActionListener(e -> logoutActionPerformed(e));
 
                     GroupLayout panel4Layout = new GroupLayout(panel4);
                     panel4.setLayout(panel4Layout);
@@ -476,15 +634,32 @@ public class StuMisMainFunction extends JFrame {
                 //======== panel5 ========
                 {
 
+                    //---- button3 ----
+                    button3.setText("\u5bfc\u51fa");
+                    button3.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.BOLD, 14));
+                    button3.setBorder(Borders.createEmptyBorder("0dlu, 0dlu, 0dlu, 0dlu"));
+                    button3.addActionListener(e -> fileoutActionPerformed(e));
+
+                    //---- fileinbtm ----
+                    fileinbtm.setText("\u5bfc\u5165");
+                    fileinbtm.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.BOLD, 14));
+                    fileinbtm.setBorder(BorderFactory.createEmptyBorder());
+                    fileinbtm.addActionListener(e -> fileInActionPerformed(e));
+
                     GroupLayout panel5Layout = new GroupLayout(panel5);
                     panel5.setLayout(panel5Layout);
                     panel5Layout.setHorizontalGroup(
                         panel5Layout.createParallelGroup()
-                            .addGap(0, 743, Short.MAX_VALUE)
+                            .addComponent(button3, GroupLayout.DEFAULT_SIZE, 743, Short.MAX_VALUE)
+                            .addComponent(fileinbtm, GroupLayout.DEFAULT_SIZE, 743, Short.MAX_VALUE)
                     );
                     panel5Layout.setVerticalGroup(
                         panel5Layout.createParallelGroup()
-                            .addGap(0, 121, Short.MAX_VALUE)
+                            .addGroup(panel5Layout.createSequentialGroup()
+                                .addComponent(button3, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(fileinbtm, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(31, Short.MAX_VALUE))
                     );
                 }
 
@@ -501,15 +676,30 @@ public class StuMisMainFunction extends JFrame {
                             .addComponent(panel4, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(panel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addGap(0, 389, Short.MAX_VALUE))
+                            .addContainerGap(401, Short.MAX_VALUE))
                 );
             }
-            tabp1.addTab("\u6570\u636e\u64cd\u4f5c", optionp);
+            tabp1.addTab("\u9009\u9879", optionp);
             tabp1.setEnabledAt(2, false);
         }
         contentPane.add(tabp1, BorderLayout.NORTH);
         pack();
         setLocationRelativeTo(getOwner());
+
+        //---- fileinchooser ----
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("xls,xlsx    ExcelFile","xls","xlsx");
+            fileinchooser.setFileFilter(filter);
+        fileinchooser.setMinimumSize(null);
+            fileinchooser.setPreferredSize(new Dimension(718, 428));
+            fileinchooser.setAcceptAllFileFilterUsed(false);
+            fileinchooser.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.PLAIN, 12));
+
+        //---- fileoutchooser ----
+        fileoutchooser.setFileFilter(filter);
+        fileoutchooser.setFont(new Font("\u5fae\u8f6f\u96c5\u9ed1", Font.PLAIN, 12));
+        fileoutchooser.setPreferredSize(new Dimension(718, 428));
+        fileoutchooser.setAcceptAllFileFilterUsed(false);
+        fileoutchooser.setSelectedFile(new File(".xlsx"));
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
@@ -536,10 +726,16 @@ public class StuMisMainFunction extends JFrame {
     private JLabel label3;
     private JLabel label4;
     private JLabel label5;
+    private JButton refresh;
+    private JLabel role;
     private JPanel optionp;
     private JPanel panel4;
     private JScrollPane scrollPane2;
     private JButton logout;
     private JPanel panel5;
+    private JButton button3;
+    private JButton fileinbtm;
+    private JFileChooser fileinchooser;
+    private JFileChooser fileoutchooser;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

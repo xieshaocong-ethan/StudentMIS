@@ -9,11 +9,14 @@ new FormModel {
 			"title": "学生信息管理系统"
 			"defaultCloseOperation": 2
 			"visible": true
+			"minimumSize": new java.awt.Dimension( 140, 360 )
 			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
 				name: "tabbedPane1"
 				"font": new java.awt.Font( "微软雅黑", 0, 12 )
+				"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
 				auxiliary() {
 					"JavaCodeGenerator.variableName": "tabp1"
+					"JavaCodeGenerator.preCreateCode": "try {\n                    BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.osLookAndFeelDecorated;\n                    BeautyEyeLNFHelper.translucencyAtFrameInactive = true;\n                    UIManager.setLookAndFeel(new BeautyEyeLookAndFeelCross());\n                    UIManager.put(\"RootPane.setupButtonVisible\", false);\n                    UIManager.put(\"TabbedPane.tabAreaInsets\", new InsetsUIResource(0,0,0,0));\n                    UIManager.put(\"TabbedPane.contentBorderInsets\", new InsetsUIResource(0,0,2,0));\n                    UIManager.put(\"TabbedPane.tabInsets\", new InsetsUIResource(3,10,9,10));\n                    Font frameTitleFont = (Font)UIManager.get(\"InternalFrame.titleFont\");\n                    frameTitleFont = frameTitleFont.deriveFont(Font.PLAIN);\n                    UIManager.put(\"InternalFrame.titleFont\", frameTitleFont);\n                } catch (Exception e) {\n                    e.printStackTrace();\n                }"
 				}
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 					"$horizontalGroup": "par l {seq {space :p:181:p, par l:::p {comp label6:::::x, comp label7:::p:36:p}, space s:p::p, par l {comp passwordField1::::291:x, comp formattedTextField1::::291:x}, space :p:217:p}}"
@@ -21,9 +24,11 @@ new FormModel {
 				} ) {
 					name: "panel6"
 					"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+					"verifyInputWhenFocusTarget": false
+					"autoscrolls": true
 					auxiliary() {
-						"JavaCodeGenerator.customCreateCode": "new JPanel() {\n            @Override\n            public void paintComponent(Graphics g) {\n                super.paintComponent(g);\n                ImageIcon icon = new ImageIcon(\"C:\\\\javaP\\\\StudentMIS\\\\src\\\\3.jpg\");\n                g.drawImage(icon.getImage(),0,0,getWidth(),getHeight(),this);\n            }\n        };"
 						"JavaCodeGenerator.variableName": "homep"
+						"JavaCodeGenerator.customCreateCode": "new JPanel() {\n            @Override\n            public void paintComponent(Graphics g) {\n                super.paintComponent(g);\n                ImageIcon icon = new ImageIcon(\"C:\\\\javaP\\\\StudentMIS\\\\img\\\\3.jpg\");\n                g.drawImage(icon.getImage(),0,0,getWidth(),getHeight(),this);\n            }\n        };"
 					}
 					addEvent( new FormEvent( "java.awt.event.KeyListener", "keyTyped", "loginKeyTyped", true ) )
 					add( new FormComponent( "javax.swing.JPasswordField" ) {
@@ -65,8 +70,8 @@ new FormModel {
 					"title": "首页"
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {comp scrollPane1::l:::x, seq l {par t:::p {comp panel3:::::x, comp panel2:::::x}, space :::x}}"
-					"$verticalGroup": "par l {seq {comp panel2:::p::p, space :::p, comp scrollPane1::::480:x, space :::p, comp panel3:::p::p}}"
+					"$horizontalGroup": "par l {comp scrollPane1::l:::x, seq l {par t:::p {seq {space :::p, comp label8:::p:90:p, space :::p, comp panel3:::::x}, comp panel2:::::x}, space :::x}}"
+					"$verticalGroup": "par l {seq {comp panel2:::p:30:p, space :::p, comp scrollPane1::::480:x, space :::p, par l:::p {comp panel3:::::x, comp label8::::0:x}}}"
 				} ) {
 					name: "dialogPane"
 					"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
@@ -96,8 +101,8 @@ new FormModel {
 						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq l {comp textField1:::p:671:p, space :::p, comp sbutton:::p:63:p, space :::x}}"
-						"$verticalGroup": "par l {par b:l {comp textField1::b:::x, comp sbutton::b:p:24:p}}"
+						"$horizontalGroup": "par l {seq l {comp textField1:::p:671:p, space :::p, comp sbutton::::69:x}}"
+						"$verticalGroup": "par l {par b:l {comp textField1::b:p::p, comp sbutton::b:p:30:p}}"
 					} ) {
 						name: "panel2"
 						"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
@@ -125,8 +130,8 @@ new FormModel {
 						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq l {space :::p, comp label5:::p:150:p, space :::p, comp label4:::p:112:p, space :::p, comp label3:::p:158:p, space :::p, comp label1:::p:196:p, space :::x, comp label2:::p::p, space :::p, comp button4:::p:106:p, space :::p, comp button5:::p:107:p, space :::p, comp button1:::p:107:p, space :::p, comp cancelButton:::p:98:p, space :p:24:p}}"
-						"$verticalGroup": "par l {par b:l {comp cancelButton::b:p::p, comp button1::b:::x, comp button5::b:::x, comp button4::b:p::p, comp label1:::p:30:p, comp label3::b:p:30:p, comp label4::b:p:30:p, comp label5::b:p:30:p, comp label2::b:p::p}}"
+						"$horizontalGroup": "par l {seq l {space :::p, comp label5:::p:150:p, space :::p, comp label4:::p:112:p, space :::p, comp label3:::p:158:p, space :::p, comp label1:::p:196:p, space :::x, comp label2:::p::p, space :::p, comp button7:::p:30:p, space :::p, comp button4:::p:106:p, space :::p, comp button5:::p:107:p, space :::p, comp button1:::p:107:p, space :::p, comp cancelButton:::p:98:p, space :::p}}"
+						"$verticalGroup": "par l {par b {comp label1:::p:30:p, comp label3::b:p:30:p, comp label4::b:p:30:p, comp label5::b:p:30:p, comp label2::b:p::p, comp cancelButton::b:p::p, comp button1::b:::x, comp button5::b:::x, comp button4::b:p::p}, seq {comp button7:::p::p, space :0:0:x}}"
 					} ) {
 						name: "panel3"
 						"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
@@ -202,15 +207,34 @@ new FormModel {
 							"text": "请输入正确的性别(男or女)"
 							"visible": false
 							"font": new java.awt.Font( "微软雅黑", 1, 12 )
+							"foreground": new java.awt.Color( 255, 51, 51, 255 )
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "button7"
+							"icon": new com.jformdesigner.model.SwingIcon( 1, "C:\\javaP\\StudentMIS\\img\\Refresh_16px.png" )
+							auxiliary() {
+								"JavaCodeGenerator.variableName": "refresh"
+							}
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "refreshActionPerformed", true ) )
 						} )
 					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label8"
+						"text": "你没有权限！"
+						"foreground": new java.awt.Color( 255, 51, 51, 255 )
+						"font": new java.awt.Font( "微软雅黑", 1, 12 )
+						"visible": false
+						auxiliary() {
+							"JavaCodeGenerator.variableName": "role"
+						}
+					} )
 				}, new FormLayoutConstraints( null ) {
-					"title": "学生数据"
+					"title": "数据"
 					"enabled": false
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 					"$horizontalGroup": "par l {comp panel4:::::x, comp panel5::l:::x}"
-					"$verticalGroup": "par l {seq l {comp panel4:::p:36:p, space :::p, comp panel5:::p::p, space :0:389:x}}"
+					"$verticalGroup": "par l {seq l {comp panel4:::p:36:p, space :::p, comp panel5:::p::p, space ::401:x}}"
 				} ) {
 					name: "panel1"
 					auxiliary() {
@@ -227,6 +251,7 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "button2"
 							"text": "切换账号"
+							"font": &Font1 new java.awt.Font( "微软雅黑", 1, 14 )
 							auxiliary() {
 								"JavaCodeGenerator.variableName": "logout"
 							}
@@ -234,13 +259,30 @@ new FormModel {
 						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {space :0:743:x}"
-						"$verticalGroup": "par l {space :0:121:x}"
+						"$horizontalGroup": "par l {comp button3::::743:x, comp button6::l::743:x}"
+						"$verticalGroup": "par l {seq {comp button3:::p:36:p, space :::p, comp button6:::p:36:p, space ::31:x}}"
 					} ) {
 						name: "panel5"
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "button3"
+							"text": "导出"
+							"font": #Font1
+							"border": static com.jgoodies.forms.factories.Borders createEmptyBorder( "0dlu, 0dlu, 0dlu, 0dlu" )
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "fileoutActionPerformed", true ) )
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "button6"
+							"text": "导入"
+							"font": #Font1
+							"border": new javax.swing.border.EmptyBorder( 0, 0, 0, 0 )
+							auxiliary() {
+								"JavaCodeGenerator.variableName": "fileinbtm"
+							}
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "fileInActionPerformed", true ) )
+						} )
 					} )
 				}, new FormLayoutConstraints( null ) {
-					"title": "数据操作"
+					"title": "选项"
 					"enabled": false
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
@@ -249,6 +291,24 @@ new FormModel {
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
 			"size": new java.awt.Dimension( 745, 615 )
+		} )
+		add( new FormComponent( "javax.swing.JFileChooser" ) {
+			name: "fileChooser1"
+			auxiliary() {
+				"JavaCodeGenerator.variableName": "fileinchooser"
+				"JavaCodeGenerator.postInitCode": "FileNameExtensionFilter filter = new FileNameExtensionFilter(\"xls,xlsx    ExcelFile\",\"xls\",\"xlsx\");\n\tfileinchooser.setFileFilter(filter);\nfileinchooser.setMinimumSize(null);\n    fileinchooser.setPreferredSize(new Dimension(718, 428));\n    fileinchooser.setAcceptAllFileFilterUsed(false);\n    fileinchooser.setFont(new Font(\"\\u5fae\\u8f6f\\u96c5\\u9ed1\", Font.PLAIN, 12));"
+			}
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 60, 620 )
+		} )
+		add( new FormComponent( "javax.swing.JFileChooser" ) {
+			name: "fileChooser2"
+			auxiliary() {
+				"JavaCodeGenerator.variableName": "fileoutchooser"
+				"JavaCodeGenerator.postInitCode": "fileoutchooser.setFileFilter(filter);\nfileoutchooser.setFont(new Font(\"\\u5fae\\u8f6f\\u96c5\\u9ed1\", Font.PLAIN, 12));\nfileoutchooser.setPreferredSize(new Dimension(718, 428));\nfileoutchooser.setAcceptAllFileFilterUsed(false);\nfileoutchooser.setSelectedFile(new File(\".xlsx\"));"
+			}
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 5, 625 )
 		} )
 	}
 }

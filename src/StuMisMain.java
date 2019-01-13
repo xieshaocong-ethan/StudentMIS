@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 /**
  * StuMisMain  class
@@ -9,19 +10,9 @@ import javax.swing.*;
 
 public class StuMisMain {
     public static void main(String[] args) {
-
-        String lookAndFeel = UIManager.getSystemLookAndFeelClassName();
-        try {
-            UIManager.setLookAndFeel(lookAndFeel);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
-        }
+        //new FileInFrame(); //测试导入
+        //new FileSelectFrame(); //测试导出
         new StuMisMainFunction();
+
     }
 }
